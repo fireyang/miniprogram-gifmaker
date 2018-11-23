@@ -8,7 +8,10 @@ GIF动画制作微信小程序
 其中GIF生成的功能是用Rust实现的，使用stdweb和gif两个库，将Rust代码编译成asmjs
 
 > 本来打算到<b>Webassembly</b>，性能更好，但是发现微信对wasm支持有问题：<b>第一、</b>在开发者工具中测试没问题，真机调试以后，只要杀死小程序，第二次进入，重新执行require，Webassembly重新编译的时候就过不去了。在android中没有任何提示，Promise的catch和then方法都不会调用；在iOS中提示:Error: Out of executable memory at import0。使用最简单的代码、第二次编译一份不同的代码也都不行。<b>第二、</b>android5.1中不支持Webassemlby。所以只能选择asmjs的编译目标。
-> <b>编译到Webassembly</b>用stdweb编译到wams和js文件以后，微信小程序直接是不可以用的，首先HelloWorld代码中的alert()不支持，可以在生成的js中实现一个alert函数，其中调用微信的wx.showModal来实现弹窗。其次微信小程序中没有fetch方法，可以在生成的js中实现一个返回Promise的fetch函数，或者直接修改Webassemlby编译那一块的代码，使用小程序API的FileSystemManager.readFile来读取wasm文件。
+
+> <b>编译到Webassembly</b>用stdweb编译到wams和js文件以后，微信小程序中不能直接用，首先HelloWorld代码中的alert()不支持，可以在生成的js中实现一个alert函数，其中调用微信的wx.showModal来实现弹窗。其次微信小程序中没有fetch方法，可以在生成的js中实现一个返回Promise的fetch函数，或者直接修改Webassemlby编译那一块的代码，使用小程序API的FileSystemManager.readFile来读取wasm文件。参考https://github.com/planet0104/miniprogram-rust-wasm
+
+> <b>编译到asmjs</b>使用stdweb编译到asmjs的js文件在微信小程序中也不能直接使用，在build.cmd 中使用node recheck.js调整以后使用。
 
 https://crates.io/crates/stdweb
 
